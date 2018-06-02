@@ -224,7 +224,7 @@ extern "C"
    *
    * @return String witdth in pixels.
    */
-  uint8_t mgos_ssd1306_draw_string_color (struct mgos_ssd1306 *oled, uint8_t x, uint8_t y, char *str,
+  uint8_t mgos_ssd1306_draw_string_color (struct mgos_ssd1306 *oled, uint8_t x, uint8_t y, const char *str,
                                           mgos_ssd1306_color_t foreground, mgos_ssd1306_color_t background);
 
   /**
@@ -237,7 +237,7 @@ extern "C"
    *
    * @return String width in pixels.
    */
-  uint8_t mgos_ssd1306_draw_string (struct mgos_ssd1306 *oled, uint8_t x, uint8_t y, char *str);
+  uint8_t mgos_ssd1306_draw_string (struct mgos_ssd1306 *oled, uint8_t x, uint8_t y, const char *str);
 
   /**
    * @brief Measure on-screen width of string if drawn using active font.
