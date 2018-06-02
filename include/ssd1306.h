@@ -7,6 +7,9 @@
 
 #include "mgos_init.h"
 #include "mgos_sys_config.h"
+#include "mgos_i2c.h"
+
+#include "fonts.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -21,6 +24,20 @@ extern "C"
     SSD1306_COLOR_WHITE = 1,    //< White (or blue, yellow, pixel on)
     SSD1306_COLOR_INVERT = 2,   //< Invert pixel (XOR)
   } mgos_ssd1306_color_t;
+
+  typedef struct mgos_ssd1306
+  {
+    uint8_t address;              // I2C address
+    uint8_t width;                // panel width
+    uint8_t height;               // panel height
+    uint8_t *buffer;              // display buffer
+    uint8_t refresh_top;          // 'Dirty' window corners
+    uint8_t refresh_left;
+    uint8_t refresh_right;
+    uint8_t refresh_bottom;
+    const font_info_t *font;      // current font
+    struct mgos_i2c *i2c;         // i2c connection
+  } mgos_ssd1306;
 
   /**
    * @brief Standard Mongoose-OS init hook.

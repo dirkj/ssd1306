@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "mgos_i2c.h"
-
 #include "common/cs_dbg.h"
 
 #include "ssd1306.h"
@@ -15,19 +13,6 @@
 #define UNUSED(x) x
 #endif
 
-typedef struct mgos_ssd1306
-{
-  uint8_t address;              // I2C address
-  uint8_t width;                // panel width
-  uint8_t height;               // panel height
-  uint8_t *buffer;              // display buffer
-  uint8_t refresh_top;          // 'Dirty' window corners
-  uint8_t refresh_left;
-  uint8_t refresh_right;
-  uint8_t refresh_bottom;
-  const font_info_t *font;      // current font
-  struct mgos_i2c *i2c;         // i2c connection
-} mgos_ssd1306;
 
 static struct mgos_ssd1306 *s_global_ssd1306;
 
