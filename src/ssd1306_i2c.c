@@ -101,7 +101,10 @@ struct mgos_ssd1306 *mgos_ssd1306_create (const struct mgos_config_ssd1306 *cfg)
     _command (oled, 0x81);        // SSD1306_SETCONTRAST
     if (vccstate == SSD1306_EXTERNALVCC) _command (oled, 0x9f);
     else _command (oled, 0xcf);
+  } else {
+    LOG(LL_ERROR, ("Invalid resolution of display used, width=%d, height=%d", oled->width, oled->height));
   }
+
   _command (oled, 0xd9);        // SSD1306_SETPRECHARGE
   if (vccstate == SSD1306_EXTERNALVCC) _command (oled, 0x22);
   else _command (oled, 0xf1);
@@ -187,8 +190,13 @@ void mgos_ssd1306_refresh (struct mgos_ssd1306 *oled, bool force)
   LOG(LL_INFO, ("refreshing display, force=%s", force ? "true" : "false"));
   if (force || (oled->refresh_top <= 0 && oled->refresh_bottom >= oled->height - 1 && oled->refresh_left <= 0 && oled->refresh_right >= oled->width - 1)) {
     _command (oled, 0x21);      // SSD1306_COLUMNADDR
-    _command (oled, 0);         // column start
-    _command (oled, 127);       // column end
+    if (oled->width == 64 && oled->height == 48) {
+      _command(oled, 0x20);
+      _command(oled, 0x20 + oled->width - 1);
+    } else {
+      _command (oled, 0);         // column start
+      _command (oled, oled->width - 1);       // column end
+    }
     _command (oled, 0x22);      // SSD1306_PAGEADDR
     _command (oled, 0);         // page start
     _command (oled, (oled->height / 8) - 1);    // page end
