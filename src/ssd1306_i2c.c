@@ -21,8 +21,12 @@ static inline bool _command (struct mgos_ssd1306 *oled, uint8_t cmd)
   return mgos_i2c_write_reg_b (oled->i2c, oled->address, 0x80, cmd);
 }
 
+#define SSD1306_EXTERNALVCC 0x1
+#define SSD1306_SWITCHCAPVCC 0x2
+
 struct mgos_ssd1306 *mgos_ssd1306_create (const struct mgos_config_ssd1306 *cfg)
 {
+  uint8_t vccstate = SSD1306_SWITCHCAPVCC;
   struct mgos_ssd1306 *oled = NULL;
   oled = calloc (1, sizeof (*oled));
   if (oled == NULL)
@@ -59,29 +63,54 @@ struct mgos_ssd1306 *mgos_ssd1306_create (const struct mgos_config_ssd1306 *cfg)
   LOG (LL_DEBUG, ("Sending controller startup sequence"));
 
   _command (oled, 0xae);        // SSD1306_DISPLAYOFF
+  _command (oled, 0xd5);        // SSD1306_SETDISPLAYCLOCKDIV
+  _command (oled, 0x80);        // Suggested value 0x80
   _command (oled, 0xa8);        // SSD1306_SETMULTIPLEX
   _command (oled, oled->height - 1);
   _command (oled, 0xd3);        // SSD1306_SETDISPLAYOFFSET
   _command (oled, 0x00);        // 0 no offset
   _command (oled, 0x40);        // SSD1306_SETSTARTLINE line #0
-  _command (oled, 0xa1);        // SSD1306_SEGREMAP | 1
-  _command (oled, 0xc8);        // SSD1306_COMSCANDEC
-  _command (oled, 0xda);        // SSD1306_SETCOMPINS
-  _command (oled, oled->height < 64 ? 0x02 : 0x12);
-  _command (oled, 0x81);        // SSD1306_SETCONTRAST
-  _command (oled, 0x7f);        // default contrast ratio
-  _command (oled, 0xa4);        // SSD1306_DISPLAYALLON_RESUME
-  _command (oled, 0xa6);        // SSD1306_NORMALDISPLAY
-  _command (oled, 0xd5);        // SSD1306_SETDISPLAYCLOCKDIV
-  _command (oled, 0x80);        // Suggested value 0x80
-  _command (oled, 0xdb);        // SSD1306_VCOMMDESELECT
-  _command (oled, 0x20);        // 0.77 * Vcc (default)
   _command (oled, 0x8d);        // SSD1306_CHARGEPUMP
-  _command (oled, 0x14);        // Charge pump on, 0x10 for external Vcc
+  if (vccstate == SSD1306_EXTERNALVCC)
+    { _command(0x10); }
+  else { _command(0x14); }
   _command (oled, 0x20);        // SSD1306_MEMORYMODE
   _command (oled, 0x00);        // 0x0 act like ks0108
+  _command (oled, 0xa1);        // SSD1306_SEGREMAP | 1
+  _command (oled, 0xc8);        // SSD1306_COMSCANDEC
+  if (oled->widht == 128 && oled->height == 32) {
+    _command (oled, 0xda);        // SSD1306_SETCOMPINS
+    _command (oled, 0x02);
+    _command (oled, 0x81);        // SSD1306_SETCONTRAST
+    _command (oled, 0x8f);        // default contrast ratio
+  } else if (oled->width == 128 && oled->height == 64) {
+    _command (oled, 0xda);        // SSD1306_SETCOMPINS
+    _command (oled, 0x12);
+    _command (oled, 0x81);        // SSD1306_SETCONTRAST
+    if (vccstate == SSD1306_EXTERNALVCC) _command (oled, 0x9f);
+    else _command (oled, 0xcf);
+  } else if (oled->width == 96 && oled->height == 16) {
+    _command (oled, 0xda);        // SSD1306_SETCOMPINS
+    _command (oled, 0x02);
+    _command (oled, 0x81);        // SSD1306_SETCONTRAST
+    if (vccstate == SSD1306_EXTERNALVCC) _command (oled, 0x10);
+    else _command (oled, 0xaf);
+  } else if (oled->width == 64 && oled->height == 48) {
+    _command (oled, 0xda);        // SSD1306_SETCOMPINS
+    _command (oled, 0x12);
+    _command (oled, 0x81);        // SSD1306_SETCONTRAST
+    if (vccstate == SSD1306_EXTERNALVCC) _command (oled, 0x9f);
+    else _command (oled, 0xcf);
+  }
   _command (oled, 0xd9);        // SSD1306_SETPRECHARGE
-  _command (oled, 0xF1);        // 0x22 for external Vcc
+  if (vccstate == SSD1306_EXTERNALVCC) _command (oled, 0x22);
+  else _command (oled, 0xf1);
+
+  _command (oled, 0xdb);        // SSD1306_VCOMMDESELECT
+  _command (oled, 0x40);        // 0.77 * Vcc (default), was 0x20
+
+  _command (oled, 0xa4);        // SSD1306_DISPLAYALLON_RESUME
+  _command (oled, 0xa6);        // SSD1306_NORMALDISPLAY
 
   LOG (LL_DEBUG, ("Clearing screen buffer"));
   mgos_ssd1306_clear (oled);
