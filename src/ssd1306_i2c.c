@@ -172,7 +172,7 @@ void mgos_ssd1306_clear (struct mgos_ssd1306 *oled)
   if (oled == NULL)
     return;
 
-  LOG(LL_INFO, ("clearing display"));
+  LOG(LL_DEBUG, ("clearing display"));
   memset (oled->buffer, 0, (oled->width * oled->height / 8));
   oled->refresh_right = oled->width - 1;
   oled->refresh_bottom = oled->height - 1;
@@ -187,7 +187,7 @@ void mgos_ssd1306_refresh (struct mgos_ssd1306 *oled, bool force)
   if (oled == NULL)
     return;
 
-  LOG(LL_INFO, ("refreshing display, force=%s", force ? "true" : "false"));
+  LOG(LL_DEBUG, ("refreshing display, force=%s", force ? "true" : "false"));
   if (force || (oled->refresh_top <= 0 && oled->refresh_bottom >= oled->height - 1 && oled->refresh_left <= 0 && oled->refresh_right >= oled->width - 1)) {
     _command (oled, 0x21);      // SSD1306_COLUMNADDR
     if (oled->width == 64 && oled->height == 48) {
