@@ -78,7 +78,7 @@ struct mgos_ssd1306 *mgos_ssd1306_create (const struct mgos_config_ssd1306 *cfg)
   _command (oled, 0x00);        // 0x0 act like ks0108
   _command (oled, 0xa1);        // SSD1306_SEGREMAP | 1
   _command (oled, 0xc8);        // SSD1306_COMSCANDEC
-  if (oled->widht == 128 && oled->height == 32) {
+  if (oled->width == 128 && oled->height == 32) {
     _command (oled, 0xda);        // SSD1306_SETCOMPINS
     _command (oled, 0x02);
     _command (oled, 0x81);        // SSD1306_SETCONTRAST
