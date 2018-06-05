@@ -769,3 +769,47 @@ struct mgos_ssd1306 *mgos_ssd1306_get_global(void)
 {
   return s_global_ssd1306;
 }
+
+
+// Draw RAM-resident BitMap Files (*.bpm), exported from GIMP,
+// Usage: Export from GIMP to *.xbm, rename *.xbm to *.c and open in editor.
+// C Array can be directly used with this function.
+void mgos_ssd1306_drawBitmap(struct mgos_ssd1306 *display, int16_t x, int16_t y,
+  const uint8_t bitmap[], int16_t w, int16_t h, mgos_ssd1306_color_t color, mgos_ssd1306_color_t bg) {
+
+    int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
+    uint8_t byte = 0;
+
+    for (int16_t j=0; j<h; j++, y++) {
+        for (int16_t i=0; i<w; i++ ) {
+            if (i & 7) byte >>= 1;
+            else byte = bitmap[j * byteWidth + i / 8];
+            // Nearly identical to drawBitmap(), only the bit order
+            // is reversed here (left-to-right = LSB to MSB):
+            mgos_ssd1306_draw_pixel(display, x+i, y, (byte & 0x01) ? color:bg);
+        }
+    }
+    mgos_ssd1306_refresh(display, false);
+}
+
+// Draw RAM-resident XBitMap Files (*.xbm), exported from GIMP,
+// Usage: Export from GIMP to *.xbm, rename *.xbm to *.c and open in editor.
+// C Array can be directly used with this function.
+void mgos_ssd1306_drawXBitmap(struct mgos_ssd1306 *display, int16_t x, int16_t y,
+  const uint8_t bitmap[], int16_t w, int16_t h, mgos_ssd1306_color_t color, mgos_ssd1306_color_t bg) {
+
+    int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
+    uint8_t byte = 0;
+
+    for (int16_t j=0; j<h; j++, y++) {
+        for (int16_t i=0; i<w; i++ ) {
+            if (i & 7) byte >>= 1;
+            else      byte   = bitmap[j * byteWidth + i / 8];
+            // Nearly identical to drawBitmap(), only the bit order
+            // is reversed here (left-to-right = LSB to MSB):
+            mgos_ssd1306_draw_pixel(display, x+i, y, (byte & 0x01) ? color:bg);
+        }
+    }
+    mgos_ssd1306_refresh(display, false);
+}
+

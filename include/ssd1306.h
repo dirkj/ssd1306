@@ -321,6 +321,40 @@ extern "C"
    */
   void mgos_ssd1306_update_buffer(struct mgos_ssd1306 *oled, uint8_t * data, uint16_t length);
 
+  /**
+   * @brief Draw RAM-resident BitMap Files (*.bpm), exported from GIMP,
+   * Usage: Export from GIMP to *.xbm, rename *.xbm to *.c and open in editor.
+   * C Array can be directly used with this function.
+   *
+   * @param oled SSD1306 driver handle.
+   * @param x X position of upper left corner
+   * @paran y Y position of upper left corner
+   * @param bitmap Array with bitmap data
+   * @param w Width of image
+   * @param h Height of image
+   * @param color For pixels to be drawn (bit value 1)
+   * @param bg For pixels not to be drawn (bit value 0)
+   */
+  void mgos_ssd1306_drawBitmap(struct mgos_ssd1306 *oled, int16_t x, int16_t y,
+  const uint8_t bitmap[], int16_t w, int16_t h, mgos_ssd1306_color_t color, mgos_ssd1306_color_t bg);
+
+  /**
+   * @brief Draw RAM-resident XBitMap Files (*.xbm), exported from GIMP,
+   * Usage: Export from GIMP to *.xbm, rename *.xbm to *.c and open in editor.
+   * C Array can be directly used with this function.
+   *
+   * @param oled SSD1306 driver handle.
+   * @param x X position of upper left corner
+   * @paran y Y position of upper left corner
+   * @param bitmap Array with bitmap data
+   * @param w Width of image
+   * @param h Height of image
+   * @param color For pixels to be drawn (bit value 1)
+   * @param bg For pixels not to be drawn (bit value 0)
+   */
+  void mgos_ssd1306_drawXBitmap(struct mgos_ssd1306 *oled, int16_t x, int16_t y,
+  const uint8_t bitmap[], int16_t w, int16_t h, mgos_ssd1306_color_t color, mgos_ssd1306_color_t bg);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
