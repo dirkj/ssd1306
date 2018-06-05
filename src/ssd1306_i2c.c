@@ -13,6 +13,12 @@
 #define UNUSED(x) x
 #endif
 
+#define swap(a, b) \
+    { \
+        (a) ^= (b); \
+        (b) ^= (a); \
+        (a) ^= (b); \
+    }
 
 static struct mgos_ssd1306 *s_global_ssd1306;
 
@@ -412,6 +418,52 @@ draw_vline_finish:
   if (oled->refresh_bottom < y + h - 1)
     oled->refresh_bottom = y + h - 1;
   return;
+}
+
+void mgos_ssd1306_draw_line(struct mgos_ssd1306 *oled, int8_t x0, int8_t y0, int8_t x1, int8_t y1, mgos_ssd1306_color_t color) {
+  if ((x0 >= oled->width) || (x0 < 0) || (y0 >= oled->height) || (y0 < 0))
+    return;
+  if ((x1 >= oled->width) || (x1 < 0) || (y1 >= oled->height) || (y1 < 0))
+    return;
+
+  bool steep = abs(y1 - y0) > abs(x1 - x0);
+  if (steep) {
+    swap(x0, y0);
+    swap(x1, y1);
+  }
+
+  if (x0 > x1) {
+    swap(x0, x1);
+    swap(y0, y1);
+  }
+
+  int16_t dx, dy;
+  dx = x1 - x0;
+  dy = abs(y1 - y0);
+
+  int16_t errx = dx / 2;
+  int16_t ystep;
+
+  if (y0 < y1) {
+    ystep = 1;
+  }
+  else {
+    ystep = -1;
+  }
+
+  for (; x0 <= x1; x0++) {
+    if (steep) {
+       mgos_ssd1306_draw_pixel(oled, y0, x0, color);
+    }
+    else {
+       mgos_ssd1306_draw_pixel(oled, x0, y0, color);
+    }
+    errx -= dy;
+    if (errx < 0) {
+       y0 += ystep;
+       errx += dx;
+    }
+  }
 }
 
 void mgos_ssd1306_draw_rectangle(struct mgos_ssd1306 *oled, int8_t x, int8_t y, uint8_t w, uint8_t h, mgos_ssd1306_color_t color)
