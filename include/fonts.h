@@ -25,7 +25,7 @@ extern "C"
   } font_info_t;
 
 
-#define NUM_FONTS 4             // Number of built-in fonts
+#define NUM_FONTS 5             // Number of built-in fonts
 
   extern const font_info_t *fonts[NUM_FONTS];   // Built-in fonts
 
