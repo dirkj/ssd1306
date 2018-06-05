@@ -254,6 +254,18 @@ extern "C"
   uint8_t mgos_ssd1306_draw_string(struct mgos_ssd1306 *oled, uint8_t x, uint8_t y, const char *str);
 
   /**
+   * @brief Draw a string right aligned to the given position, using the active font and default colors (white on transparent)
+   *
+   * @param oled SSD1306 driver handle.
+   * @param x X coordinate, if negative, then it is the distance from right side of the display.
+   * @param y Y coordinate, if negative, then it is the distance from the bottom of the display.
+   * @param str String to draw.
+   *
+   * @return String width in pixels.
+   */
+  uint8_t mgos_ssd1306_draw_string_right_aligned(struct mgos_ssd1306 * oled, int x, int y, const char *str);
+
+  /**
    * @brief Measure on-screen width of string if drawn using active font.
    *
    * @param oled SSD1306 driver handle.
@@ -261,7 +273,7 @@ extern "C"
    *
    * @return String width in pixels.
    */
-  uint8_t mgos_ssd1306_measure_string(struct mgos_ssd1306 *oled, char *str);
+  uint8_t mgos_ssd1306_measure_string(struct mgos_ssd1306 *oled, const char *str);
 
   /**
    * @brief Get the height of the active font.
