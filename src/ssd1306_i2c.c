@@ -723,6 +723,22 @@ uint8_t mgos_ssd1306_get_font_c(struct mgos_ssd1306 * oled)
   return (oled->font->c);
 }
 
+void mgos_ssd1306_display_on(struct mgos_ssd1306 *oled)
+{
+  if (oled == NULL)
+    return;
+
+  _command(oled, 0xaf);        // SSD1306_DISPLAYON
+}
+
+void mgos_ssd1306_display_off(struct mgos_ssd1306 *oled)
+{
+  if (oled == NULL)
+    return;
+
+  _command(oled, 0xae);        // SSD1306_DISPLAYOFF
+}
+
 void mgos_ssd1306_invert_display(struct mgos_ssd1306 *oled, bool invert)
 {
   if (oled == NULL)

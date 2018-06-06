@@ -294,6 +294,20 @@ extern "C"
   uint8_t mgos_ssd1306_get_font_c(struct mgos_ssd1306 *oled);
 
   /**
+   * @brief Turns display off (entirely dark)
+   *
+   * @param oled SSD1306 driver handle.
+   */
+  void mgos_ssd1306_display_off(struct mgos_ssd1306 *oled);
+
+  /**
+   * @brief Turns display on
+   *
+   * @param oled SSD1306 driver handle.
+   */
+  void mgos_ssd1306_display_on(struct mgos_ssd1306 *oled);
+
+  /**
    * @brief Invert or restore the display. Inverting the display flips the bitmask -
    * 1 is black (off) and 0 is white (on).
    *
